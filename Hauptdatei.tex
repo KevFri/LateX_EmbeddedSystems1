@@ -1,0 +1,100 @@
+\documentclass[11pt]{scrartcl}
+ 
+%deutsche Zeichensätze einbinden
+\usepackage{ucs}
+\usepackage[utf8x]{inputenc}
+\usepackage[T1]{fontenc}
+
+%Latex mitteilen, dass deutsche sprache verewendet wird
+\usepackage[ngerman]{babel}
+
+%Mathepackage der American Mathematical Society einbinden 
+\usepackage{amsmath,amssymb,amstext}
+
+%Graphic package einbinden
+\usepackage{graphicx}
+
+\usepackage{listings} 
+\usepackage{xcolor}
+
+%Autor,... festlegen
+\title{Embedded Systems 1 - Dokumentation}
+\author{Kevin Fritz}
+\date{\today{}, Aalen}
+
+% für Listings
+\usepackage{listings}
+\lstset{numbers=left, numberstyle=\tiny, numbersep=5pt, keywordstyle=\color{blue}\bfseries, stringstyle=\ttfamily,showstringspaces=false,basicstyle=\footnotesize,captionpos=b,}
+
+%define language and add more keywords
+\lstset{language=C, morekeywords={[2]uint8_t,uint16_t,uint32_t,uint64_t,int8_t,int16_t,int32_t,int64_t,__asm__}}
+
+\definecolor{bluekeywords}{rgb}{0,0,1}
+\definecolor{greencomments}{rgb}{0,0.5,0}
+\definecolor{redstrings}{rgb}{0.64,0.08,0.08}
+\definecolor{xmlcomments}{rgb}{0.5,0.5,0.5}
+\definecolor{orangestrings}{rgb}{1,0.5,0}
+\definecolor{bluetypes}{rgb}{0,0.7,1}
+\definecolor{types}{rgb}{0.17,0.57,0.68}
+
+\lstset{language=C,
+captionpos=b,
+%numbers=left, %Nummerierung
+%numberstyle=\tiny, % kleine Zeilennummern
+frame=lines, % Oberhalb und unterhalb des Listings ist eine Linie
+showspaces=false,
+showtabs=false,
+breaklines=true,
+showstringspaces=false,
+breakatwhitespace=true,
+escapeinside={(*@}{@*)},
+commentstyle=\color{xmlcomments},
+morekeywords={__asm__},
+morekeywords=[2]{uint8_t,uint16_t,uint32_t,uint64_t,int8_t,int16_t,int32_t,int64_t},
+keywordstyle=\color{bluekeywords},
+keywordstyle=[2]\color{bluetypes},
+stringstyle=\color{orangestrings},
+basicstyle=\ttfamily\small,
+}
+
+\usepackage[
+colorlinks=true,
+urlcolor=blue,
+linkcolor=black
+]{hyperref}
+
+\begin{document}
+%Titelblatt einfügen
+\maketitle
+\begin{center}
+	\includegraphics[width=\textwidth]{Images/hs_aalen_logo}
+\end{center}
+\newpage
+
+\tableofcontents
+\newpage
+
+\input{Einleitung}
+\newpage
+
+\input{GettingStarted}
+\newpage
+
+\input{Rechenleistung}
+\newpage
+
+\input{IO-Bibliothek}
+\newpage
+
+\input{Vorlesungsmitschrift_04042017}
+\newpage
+
+\input{Vorlage}
+\newpage
+
+\input{CQuellcode}
+\newpage
+
+
+
+\end{document}

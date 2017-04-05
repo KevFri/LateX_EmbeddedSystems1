@@ -1,0 +1,39 @@
+\section{IO-Bibliothek}
+\subsection{Aufgabenstellung}
+Die populäre Arduino-Plattform (\url{https://www.arduino.cc/en/Reference/}) 
+kapselt die Pinkonfiguration und -ansteuerung mit folgenden Funktionen:
+\begin{itemize}
+\item pinMode()
+\item digitalRead()
+\item digitalWrite()
+\end{itemize}
+Übertragen Sie dieses Konzept auf das EDA-Board. Anwendungsbeispiele:
+\begin{itemize}
+\item pinMode(SW1, IPUT\_PULLUP)
+\end{itemize}
+soll den Pin, an den SW1 angeschlossen ist, als digitalen Eingang konfigurieren und den Pullup-Widerstand einschalten.
+\begin{itemize}
+	\item digitalWrite(LED203, HIGH)
+\end{itemize}
+soll an dem Pin, an den LED203 angeschlossen ist,
+einen High-Pegel ausgeben.
+Verwenden Sie die Bezeichner aus dem Schaltplan.
+Modularisieren Sie Ihre Software, verwenden Sie dazu die Dateinamen \textit{edaPIC33Hardware.h} und \textit{edaPIC33Hardware.c}.\newline \newline
+Dokumentieren Sie die Funktionen mit Doxygen.\newline \newline
+Messen Sie die Zeit, die zur Ansteuerung eines Ausgangspins mit den IO-Bibliotheksfunktionen notwendig ist
+und vergleichen Sie diese mit einem direkten Schreiben in die entsprechenden Hardwareregister.
+
+\subsection{Lösung}
+\begin{enumerate}
+		\item Lösungsansatz 1
+		\item Lösungsansatz 2
+		\item Lösungsansatz 3
+		\item Lösungsansatz 4
+\end{enumerate}
+
+
+%Beispiel für Quellcode Listening
+\begin{lstlisting}[frame=htrbl, caption={Listening Bezeichnung}, label={lst:Referenzname}]
+//Quellcode
+\end{lstlisting}
+

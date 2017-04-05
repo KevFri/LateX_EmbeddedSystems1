@@ -1,0 +1,25 @@
+\section{Quellcode}
+\subsection{C-Code}
+Anhang C-Code Syntax highlighting.
+
+%\lstset{language=C}
+\begin{lstlisting}[frame=htrbl, caption={Das Listing zeigt C Quellcode}, label={lst:result2}]
+
+void delay_ms(uint16_t u16milliseconds){
+    uint16_t ui16_i=0;
+    while(u16milliseconds){
+        for (ui16_i=0;ui16_i<331;ui16_i++){    //1 ms delay loop
+            __asm__ volatile("nop \n\t"
+                             "nop \n\t"
+                             "nop \n\t");
+        }//for
+        u16milliseconds--;
+    }//while
+}
+
+int16_t i16_x;
+\end{lstlisting}
+
+\begin{lstlisting}[frame=htrbl, caption={leeres listing}, label={lst:leer}]
+//leeres listing
+\end{lstlisting}
