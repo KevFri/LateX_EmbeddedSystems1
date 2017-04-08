@@ -24,16 +24,67 @@ Messen Sie die Zeit, die zur Ansteuerung eines Ausgangspins mit den IO-Bibliothe
 und vergleichen Sie diese mit einem direkten Schreiben in die entsprechenden Hardwareregister.
 
 \subsection{Lösung}
-\begin{enumerate}
-		\item Lösungsansatz 1
-		\item Lösungsansatz 2
-		\item Lösungsansatz 3
-		\item Lösungsansatz 4
-\end{enumerate}
+Alle Device-Pins (ausgenommen VDD, VSS, MCLR and OSC1/CLKI) sind aufgeteilt auf die Ports für Peripheriegeräte und parallel I/O Ports. Alle I/O Ports sind Schmitt-Trigger Input (verbesserte Störungsunempfindlichkeit / Rauschempfindlichkeit).\newline
+Alle Port Pins besitzen acht Register, durch diese Register lässt sich der I/O Port wie in Tabelle \ref{tab:ioports} dargestellt konfigurieren. Die Register Maps sind in Abbildung \ref{image:PORTA}-\ref{image:PORTG} dargestellt.\newline\newline
+Ein Beispiel wie auf die einzelnen Register Bits zugegriffen werden kann und wie ein Port konfiguriert werden kann ist in Listing \ref{lst:confregport} zu sehen.\newline\newline
+Die relevanten Auszüge aus dem Datenblatt sind in den Abbildungen \ref{image:page207}-\ref{image:page209} abgebildet.\newline\newline
+Es wurde die Bibliothek mit den Dateien \textit{edaPIC33Hardware.h} und \textit{edaPIC33Hardware.c} erstellt. Die Funktion wurde mit Doxygen dokumentiert (TODO Anhang...).
 
+\newpage
+\begin{table}
+\begin{tabular}{|l|l|}
+	\hline 
+	\textbf{Register Bit} & \textbf{Function}\\ 
+	\hline
+	TRISx 	&determines whether the pin is an input 	or an output\\
+			&0:=output, 1:=input\\
+			&default: all port pins are defined as inputs after a reset\\
+	\hline 
+	PORTx 	&read reads the port, write writes the latch \\ 
+	\hline 
+	LATx 	&read reads the latch, write writes the latch \\ 
+	\hline 
+	ODCx 	&configures pin for digital or open-drain output \\
+			&0:=digital output, 1:=open drain output\\
+	\hline 
+	CNENx 	&enables change notification (CN) interrupts\\
+			&0:=interrupts disabled, 1:=interrupts enabled\\
+	\hline 
+	CNPUx 	&enables weak pullup\\
+			&0:=pullup disabled, 1:=pullup enabled\\  
+	\hline 
+	CNPDx 	&enables weak pulldown\\
+			&0:=pulldown disabled, 1:=pulldown enabled\\  
+	\hline 
+	ANSELx 	&controls the operation of the analog port pins\\
+			&0:=port operates as digital I/O port\\
+			&1:=port operates as analog I/O port\\
+	\hline
+	note 	&Any bit and its associated data and control registers that are not\\
+			&valid for a particular device is disabled. This means the correspon\\
+			&-ding LATx and TRISx registers and the port pin are read as zeros.\\
+	\hline
+	note	&The open-drain feature allows the generation of outputs higher\\
+			&than VDD (e.g., 5V on a 5V tolerant pin) by using external pull-up\\
+			&resistors. The maximum open-drain voltage allowed is the same as \\
+			&the maximum VIH specification for that pin.\\
+	\hline
+	note	&Pull-ups and pull-downs on change notification (CN) pins should\\
+			&be disabled when the port pin is configured as a digital output.\\
+	\hline
+\end{tabular}
+\caption{Konfigurationsmöglichkeiten der I/O Ports}
+\label{tab:ioports}
+\end{table}
 
-%Beispiel für Quellcode Listening
-\begin{lstlisting}[frame=htrbl, caption={Listening Bezeichnung}, label={lst:Referenzname}]
-//Quellcode
+\begin{lstlisting}[frame=htrbl, caption={Konfigurieren des Ports RB8 als Digitaler Input mit Pullup Widerstand}, label={lst:confregport}]
+//configure RB8 as digit input with pullup
+TRISBbits.TRISB8=1;     //configure as input
+ANSELBbits.ANSB8=0;     //configure as digital
+CNENBbits.CNIEB8=0;     //disable change notification interrupt
+CNPUBbits.CNPUB8=1;     //enable weak pullup
+CNPDBbits.CNPDB8=0;     //disable weak pulldown
 \end{lstlisting}
+
+
 

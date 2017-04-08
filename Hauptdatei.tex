@@ -27,7 +27,9 @@
 \lstset{numbers=left, numberstyle=\tiny, numbersep=5pt, keywordstyle=\color{blue}\bfseries, stringstyle=\ttfamily,showstringspaces=false,basicstyle=\footnotesize,captionpos=b,}
 
 %define language and add more keywords
-\lstset{language=C, morekeywords={[2]uint8_t,uint16_t,uint32_t,uint64_t,int8_t,int16_t,int32_t,int64_t,__asm__}}
+%\lstset{language=C, %morekeywords={[2]uint8_t,uint16_t,uint32_t,uint64_t,int8_t,int16_t,int32_t,int64_t,__asm__},
+%morekeywords={[3]TRISB8,ANSB8,CNIENB8,CNPUB8,CNPB8}
+%}
 
 \definecolor{bluekeywords}{rgb}{0,0,1}
 \definecolor{greencomments}{rgb}{0,0.5,0}
@@ -51,8 +53,10 @@ escapeinside={(*@}{@*)},
 commentstyle=\color{xmlcomments},
 morekeywords={__asm__},
 morekeywords=[2]{uint8_t,uint16_t,uint32_t,uint64_t,int8_t,int16_t,int32_t,int64_t},
+morekeywords={[3]TRISB8,ANSB8,CNIEB8,CNPUB8,CNPDB8, LATB8},
 keywordstyle=\color{bluekeywords},
 keywordstyle=[2]\color{bluetypes},
+keywordstyle=[3]\color{greencomments},
 stringstyle=\color{orangestrings},
 basicstyle=\ttfamily\small,
 }
@@ -89,10 +93,7 @@ linkcolor=black
 \input{Vorlesungsmitschrift_04042017}
 \newpage
 
-\input{Vorlage}
-\newpage
-
-\input{CQuellcode}
+\input{Anhang}
 \newpage
 
 
