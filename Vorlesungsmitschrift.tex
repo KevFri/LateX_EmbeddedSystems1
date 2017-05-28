@@ -1,0 +1,199 @@
+\section{Mitschrift aus Vorlesung}
+\subsection{Vorlesung 04.04.2017 - IO-Bibliothek}
+
+\begin{itemize}%Aufzählung mit Numerierung
+		\item jeder uC is universell aufgebaut und muss für jeden Fall individuell konfiguriert werden
+		\item kleine Bibliothek zum anpassen der IO-Ports ist praktisch
+		\item Lese und Schreib Funktionalität soll realisiert werden
+		\item Datenblatt Figure 11-1 -> Pins müssen über Treiber realisiert werden, Schmitt-Trigger ist enthalten
+		\item Pegel um Treiber zu aktivieren? nachlesen Schaltbild könnte falsch sein
+		\item Lesezugriff über Port, Schreibezugriff über Latch
+		\item Erkenntnis: Lesen des Datenblattes liefert Aufschluss wie die Pins zu beschalten sind. 
+		
+\end{itemize}
+
+\subsection{Vorlesung 11.04.2017 - Timer-Konfiguration}
+
+\begin{itemize}%Aufzählung mit Numerierung
+	\item An beliebigen Pin soll PWM ausgegeben werden-> Nachbildung durch Software
+	\item Software PWM soll Leuchtdiode ansteuern
+	\item Der dsPIC22EP810MU verfügt über 9 Zeitgeber Timer1 ... Timer9
+	\item Unterschiedliche Struktur 16/32Bit
+	\item Können Interrupts auslesen
+	\item Übersicht/Kurzfassung in Datenblatt Abschnitt 12 / S271ff.
+	\item Dataillierte Information Mikrochip dsPIC33E/PIC24E Familiy Reference Manual Abschnitt 11, mit Konfigurationscode, sehr hilfreich
+	\item Timer1: Figure 12-1 16-Bit Timer1 Modul Block Diagramm
+	\item Timer ist im Prinzip Zähler -> 16Bit Register das incrementiert werden kann
+	\item Prescaler Teilerfaktor kann eingestellt werden
+	\item Abbruch durch Vergleicher -> PR1. 
+	\item Flag kann gesetzt werden -> Interrupt erzeugen und/oder Zähler zurücksetzen
+	\item es gibt viele Möglichkeiten, die durch äußere Parameter einstellbar sind
+	\item 16-Bit-Timer-1 verwendbar als
+	\begin{itemize}
+		\item Timer (Zeitgeber), auch in Verbindung mit dem low Power 32kHz Quarzoszillator -> kann Rechner z.B. schlafen legen
+		\item Gated Timer (Periodendauermessung eines externen Signals)
+		\item Counter (Zählen externer Impulse)
+	\end{itemize}
+	\item Initialation Coder for 16-bit Timer Module Example 11-1, löst auch Interrupts aus, benötigen wir (noch) nicht. Abschnitt 11, S.11
+	\item Alternativen zur Konfiguration mittels Handcodierung
+	\begin{itemize}
+		\item OpenTimerX-Funktionen aus der plib-Bibliothek
+		\item MPLAB Code Configurator (grafisches Tool) ... leider nicht für alle µC verfügbar, für unseren auch nicht
+	\end{itemize}
+	\item Timer3 Konfiguration
+	\begin{itemize}
+		\item TypeC Timer kann auch A/D Wandlungen zyklisch abtasten
+		\item Timer sind kaskadierbar
+	\end{itemize}
+\end{itemize}
+
+\subsection{Vorlesung 25.04.2017 - SystemTime}
+
+\begin{itemize}%Aufzählung mit Numerierung
+	\item Millis soll in 32Bit Variable gespeichert werden
+	\item Interrupt unterbricht laufende Operationen und verzweigt an eine Stelle im Programmcode
+	\item Interrupt soll ms Tigger incrementieren
+	\item 16Bit rechner \& 32Bit Variable kann Probleme beim lesen verursachen, da mehrere Operationen verwendet werden
+	\item Timer 3 in Sekundentakt
+\end{itemize}
+Ein Interrupt ist die Unterbrechung eines Programm durch ein Ereignis, z.B.:
+\begin{itemize}
+	\item Signale an I/O Pins
+	\item Zeitgeber (Timer)
+	\item ADC mit Konvertierung fertig
+	\item Serielle Kommunikation
+	\item EEPROM-Schreibzugriff beendet
+\end{itemize}
+Das Vorhandensein von Interruptquellen ist abhängig von im Baustein implementierten Peripheriekomponenten.\newline\newline
+Interrupt:
+\begin{itemize}
+	\item Ein Interrupt unterbricht das laufende Programm und verzweigt zur Interruptserviceroutine ISR
+	\item Nach Abarbeiten der ISR wurd das unterbrochene Programm fortgesetzt
+\end{itemize}
+%
+Interruptvektor:
+\begin{itemize}
+	\item Sammlung aller Programmspeicherstellen bei denen Interrupts stehen
+	\item ...
+\end{itemize}
+%
+Interruptsserviceroutine
+\begin{itemize}
+	\item Code, der nach einer Interruptanforderung abgearbeitet wird
+\end{itemize}
+%
+Interruptlatenzzeit
+\begin{itemize}
+	\item Zeitraum zwischen Interruptanforderung und Abarbeitung des Befehls in der ISR
+\end{itemize}
+%
+Trap:
+\begin{itemize}
+	\item Spezielle Interrupt, der bei schwerwiegenden Fehlern ausgelöst wird (z.B. Division durch Null, Oszillatorausfall etc.)
+	\item führt Standartmäßig zu einem Reset
+\end{itemize}
+%
+2Schritte:
+\begin{itemize}
+	\item Konfigurieren der Hardware, die den Interrupt auslösen soll
+	\item Konfiguration des dazugehörigen Interrupts
+\end{itemize}
+%
+Interrupts konfigurieren:
+\begin{itemize}
+	\item IECx: Interrupt enable
+	\item 	
+\end{itemize}
+%
+ISR vs. C-Funktion
+\begin{itemize}
+	\item Da nicht vorhergesagt werden kann, an welcher Stelle ein Interrupt den Programmablauf unterbricht, müssen funktionskritische Daten z.B.: ALU-Stati, von der ISR gesichert sein und vor der Rückkehr zum unterbrochenen Programm wiederhergestellt werden
+	\item Das dazugehörige Code wird vom Compiler eingefügt
+	\item Der C-Compiler benötigt eine zusätzliche Information darüber, dass eine Codesequenz eine ISR und keine gewöhnliche Funktion ist (spezielle Syntax)	
+\end{itemize}
+
+%
+ISR:
+\begin{itemize}
+	\item Unterscheidung von einer Funktion durch Schlüsselwörter oder pragma-Direktiven
+	\item ist vom Typ void
+	\item keine Parameterübergabe
+	\item soll kurze Laufzeiten haben
+	\item soll keine anderen Funktionen aufrufen
+	\item Globale Variablen, die in der ISR Routine verändert werden als volatile deklarieren
+	\item Nach Abarbeitung des Interrupts Interrupt Flag-löschen
+	\item Flag von Timer zurücksetzen
+\end{itemize}
+
+\subsection{Vorlesung 02.05.2017 - Non-blocking Code}
+\begin{itemize}
+	\item ...
+\end{itemize}
+
+\subsection{Vorlesung 16.05.2017 - LCD-Bibliothek}
+\begin{itemize}
+	\item LC-Display
+	\begin{itemize}
+		\item FDCC1602L-NSWBBW-91LE
+		\item alphanumerisches Display
+		\item 2Zeilen, 16Zeichen/Zeile
+		\item HD44780 Controller, steuer Display Hardware an
+		\item LC-Controller ist über einen 8bit Datenstrom angeschlossen
+		\item Die Kommunikation zwischen PIC und HD44780 erfolgt nach einem definierten Protokoll
+		\item Initialisierungssequenz für HD44780 Controller notwendig
+		\item Blockschaltbild von Display-Controller
+	\end{itemize}
+	\item Aus Sicht des uC-Programmierers
+	\begin{itemize}
+		\item HD44780 hat ein Instruktions-(IR) und ein Datenregister DR
+		\item beide Register sind 8Bit Register
+		\item Über diese beiden Register erfolgt die Kommunikation mit dem PIC uC
+		\item Interne Register
+		\begin{itemize}
+			\item DDRAM: Display Data RAM
+			\item CGRAM: Character Generator RAM
+		\end{itemize}			
+		\item 11 ansteuerbare Pins, D0-D7, E(nable), RS,RW
+		\begin{itemize}
+			\item RS Register Select 0: Incstruction, 1: Data
+			\item R/notW 0:Write, 1:Read
+			\item E Enable
+			\item Dx D7...D0 (8-Bit-Modus) D7:BusyFlag
+			\item 8-Bit-Daten werden in einem Paket übertragen
+			\item mit fallender Flanke von E werden die Daten übernommen
+			\item Achtung bei Schreib/Lese Zugriff muss Pin Mode umgeschalten werden
+			\item Initialisierungssequenz: HD44780-Datenblatt S.45 mit Zeitangaben(!)
+		\end{itemize}
+		\item busy flag sollte abgefragt werden vor Schreibzugriff
+		\item Funktionen
+		\begin{itemize}
+			\item configMyLCDport();
+			\item clockLCDenable();
+			\item initMyLCD();
+			\item sendCommandLCD(uint8\_t u8Data);
+			\item writeDataLCD(uint8\_t u8data);
+			\item setDDRAMAdressLCD(uint8\_t u8adress)
+			\item uint8\_t readBusyFlagAndAdressLCD();
+			\item void putsLCD(char *pData);
+			\item void putCharLCD(char c);
+		\end{itemize}
+		\item Anpassung an die Erfordernisse des kooperativen Multitasikings
+		\begin{itemize}
+			\item Delays >10us durch State-Machine ersetzen
+			\item Ansatz: putc() schreibt ein Zeichen auf das LCD
+			\item isReadyLCD() fragt das Busy-Flag ab und gibt true zurück, wenn der nächste character geschrieben werden kann
+		\end{itemize}
+			\item Informationen
+		\begin{itemize}
+			\item Datenblatt FDCC1602L-NSWBBW-91LE z.B. farnell
+			\item Datenblatt Dispaycontroller sparkfun, maritex
+			\item Beschreibungen wikipedia HD44780, \url{sprut.de/electronic/lcd/index.htm}
+			\item Simulator
+		\end{itemize}
+\end{itemize}
+\end{itemize}
+
+\subsection{Vorlesung 16.05.2017 - LCD-Bibliothek 2}
+\begin{itemize}
+	\item 
+\end{itemize}

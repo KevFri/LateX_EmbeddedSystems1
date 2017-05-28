@@ -1,0 +1,72 @@
+\section{SystemTime}
+\subsection{Aufgabenstellung}
+
+Schreiben Sie ein Modul mit folgender Funktionalität:
+\begin{itemize}
+	\item getSystemTimeMillis()
+\end{itemize}
+Die genannte get-Funktion soll den Wert eines Zählers liefern, welcher in der Timer-1-ISR jede Millisekunde inkrementiert wird. Der Zähler selbst soll außerhalb des Moduls nicht sichtbar sein.
+Innerhalb des Moduls soll auch der Timer konfiguriert werden.\newline
+Testen Sie das Modul mit einem Programm, das mittels getSystemTimeMillis() ein Rechtecksignal mit einer Frequenz von 50 Hz und einer Einschaltdauer von 25\% generiert.\newline\newline
+Hinweise zur Implementierung:\newline
+Beachten Sie, dass ein Interrupt auch eine 32-Bit-Leseoperation unterbrechen kann. Entwickeln Sie einen Mechanismus, mit dem  getSystemTimeMillis() auch in diesem Fall einen konsistenten Zählerstand zurückliefert.\newline\newline
+{\footnotesize Ergänzung:\newline
+Konfigurieren Sie Timer 3 in Verbindung mit dem 32-kHz-Quarz so, dass jede Sekunde ein Interrupt ausgelöst wird. Schreiben Sie in gleicher Weise wie oben eine Funktion getSystemTimeSeconds()
+Testen Sie die Funktion, indem Sie damit eine LED im Zweisekundentakt blinken lassen.
+}
+\subsection{Lösung}
+Die geforderte Funktion wurde durch die drei Funktionen aus Listing \ref{lst:SysTimeFunctions} realisiert. Die Funktion configSystemTimeMillis() konfiguriert Timer 1 als nicht freilaufenden Timer mit der Incrementfrequenz $ F_P=\frac{F_{OSC}}{2} $ und erlaubt Interrupts.\newline
+In der Interrupt Service Routine (ISR) wird dann die globale Variable ui32SystemTimeMillis nach jedem ausgelöstet Interrupt erhöht.\newline
+Bevor diese Variable in der getSystemTimeMillis() Funktion gelesen wird, wird ein globales Access Flag gesetzt (ui8SystemTimeMillisAccesFlag). Versucht man während eines Interrupts die Variable zu lesen, dann erkennt dies die ISR und setzt ein Kollisions-Flag (ui8SystemTimeMillisConflictFlag). Wurde eine Kollision erkannt, dann liefert getSystemTimeMillis() den zuletzt gespeicherten Wert zurück, so wird eine falscher Rückgabewert beim Lesen der ui32SystemTimeMillis-Variable während einem Interrupt vermieden.
+
+
+
+%Beispiel für Quellcode Listening
+\newpage
+\begin{lstlisting}[frame=htrbl, caption={System Time Funktionen}, label={lst:SysTimeFunctions}]
+void configSystemTimeMillis()
+{
+  T1CONbits.TON = 0; //Disable Timer
+  T1CONbits.TCS = 0; //internal instruction cycle clock
+  T1CONbits.TGATE = 0; // Disable Gated Timer mode
+  T1CONbits.TCKPS = 0b01; // Select 1:8 Prescaler
+  TMR1 = 0x00; // Clear timer register
+  PR1 = 8750-1;  //Period Value: 140Mhz: 8750-1 / 120Mhz: 7500-1
+  IPC0bits.T1IP = 0x01; //Timer 1 Interrupt Priority Lvl
+  IFS0bits.T1IF = 0; // Clear Timer 1 Interrupt Flag
+  IEC0bits.T1IE = 1; // Enable Timer1 interrupt
+  T1CONbits.TON = 1; // Start Timer
+}
+
+uint32_t getSystemTimeMillis()
+{
+  uint32_t ui32ReturnValue=0;
+  static uint32_t ui32OldValue=0; 
+	
+  ui8SystemTimeMillisAccesFlag = 1;
+  ui32ReturnValue = ui32SystemTimeMillis;
+  ui8SystemTimeMillisAccesFlag = 0;
+	
+  if(ui8SystemTimeMillisConflictFlag ==1)
+  {
+	ui8SystemTimeMillisConflictFlag=0;
+	ui32ReturnValue =  ui32OldValue;
+  }
+
+  ui32OldValue = ui32ReturnValue;
+
+  return ui32ReturnValue;
+}
+
+void __attribute__((__interrupt__, no_auto_psv)) _T1Interrupt(void) //Timer1 ISR
+{
+  ui32SystemTimeMillis++;  //increase millis counter
+  if (ui8SystemTimeMillisAccesFlag == 1)    //if acces flag=1, set config flag
+	ui8SystemTimeMillisConflictFlag = 1;
+  else
+	ui8SystemTimeMillisConflictFlag = 0;
+	
+  IFS0bits.T1IF = 0;      //Clear Timer1 interrupt flag
+}
+\end{lstlisting}
+

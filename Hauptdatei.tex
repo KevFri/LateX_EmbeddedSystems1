@@ -13,6 +13,7 @@
 
 %Graphic package einbinden
 \usepackage{graphicx}
+\usepackage{subfigure} 
 
 \usepackage{listings} 
 \usepackage{xcolor}
@@ -24,7 +25,7 @@
 
 % für Listings
 \usepackage{listings}
-\lstset{numbers=left, numberstyle=\tiny, numbersep=5pt, keywordstyle=\color{blue}\bfseries, stringstyle=\ttfamily,showstringspaces=false,basicstyle=\footnotesize,captionpos=b,}
+\lstset{numbers=left, numberstyle=\tiny, numbersep=5pt, keywordstyle=\color{blue}\bfseries, stringstyle=\ttfamily,showstringspaces=false,basicstyle=\footnotesize,captionpos=b,tabsize=2,}
 
 %define language and add more keywords
 %\lstset{language=C, %morekeywords={[2]uint8_t,uint16_t,uint32_t,uint64_t,int8_t,int16_t,int32_t,int64_t,__asm__},
@@ -52,7 +53,7 @@ breakatwhitespace=true,
 escapeinside={(*@}{@*)},
 commentstyle=\color{xmlcomments},
 morekeywords={__asm__},
-morekeywords=[2]{uint8_t,uint16_t,uint32_t,uint64_t,int8_t,int16_t,int32_t,int64_t},
+morekeywords=[2]{uint8_t,uint16_t,uint32_t,uint64_t,int8_t,int16_t,int32_t,int64_t,STATE_STABLE_HIGH, STATE_INSTABLE_HIGH, STATE_STABLE_LOW, STATE_INSTABLE_LOW, LOW, HIGH},
 morekeywords={[3]TRISB8,ANSB8,CNIEB8,CNPUB8,CNPDB8, LATB8},
 keywordstyle=\color{bluekeywords},
 keywordstyle=[2]\color{bluetypes},
@@ -60,6 +61,8 @@ keywordstyle=[3]\color{greencomments},
 stringstyle=\color{orangestrings},
 basicstyle=\ttfamily\small,
 }
+
+
 
 \usepackage[
 colorlinks=true,
@@ -90,7 +93,22 @@ linkcolor=black
 \input{IO-Bibliothek}
 \newpage
 
-\input{Vorlesungsmitschrift_04042017}
+\input{Timer-Konfiguration}
+\newpage
+
+\input{SystemTime}
+\newpage
+
+\input{NonBlockingCode}
+\newpage
+
+\input{FSM}
+\newpage
+
+\input{LCD-Bibliothek}
+\newpage
+
+\input{Vorlesungsmitschrift}
 \newpage
 
 \input{Anhang}
