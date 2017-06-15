@@ -8,26 +8,33 @@
 \BOOKMARK [1][-]{section.3}{IO-Bibliothek}{}% 8
 \BOOKMARK [2][-]{subsection.3.1}{Aufgabenstellung}{section.3}% 9
 \BOOKMARK [2][-]{subsection.3.2}{L\366sung}{section.3}% 10
-\BOOKMARK [1][-]{section.4}{Timer-Konfiguration}{}% 11
-\BOOKMARK [2][-]{subsection.4.1}{Aufgabenstellung}{section.4}% 12
-\BOOKMARK [2][-]{subsection.4.2}{L\366sung}{section.4}% 13
-\BOOKMARK [1][-]{section.5}{SystemTime}{}% 14
-\BOOKMARK [2][-]{subsection.5.1}{Aufgabenstellung}{section.5}% 15
-\BOOKMARK [2][-]{subsection.5.2}{L\366sung}{section.5}% 16
-\BOOKMARK [1][-]{section.6}{Non-blocking Code}{}% 17
-\BOOKMARK [2][-]{subsection.6.1}{Aufgabenstellung}{section.6}% 18
-\BOOKMARK [2][-]{subsection.6.2}{L\366sung}{section.6}% 19
-\BOOKMARK [1][-]{section.7}{Software-Entwurf mit FSM}{}% 20
-\BOOKMARK [2][-]{subsection.7.1}{Aufgabenstellung}{section.7}% 21
-\BOOKMARK [2][-]{subsection.7.2}{L\366sung}{section.7}% 22
-\BOOKMARK [1][-]{section.8}{LCD-Bibliothek}{}% 23
-\BOOKMARK [2][-]{subsection.8.1}{Aufgabenstellung}{section.8}% 24
-\BOOKMARK [2][-]{subsection.8.2}{L\366sung}{section.8}% 25
-\BOOKMARK [1][-]{section.9}{Mitschrift aus Vorlesung}{}% 26
-\BOOKMARK [2][-]{subsection.9.1}{Vorlesung 04.04.2017 - IO-Bibliothek}{section.9}% 27
-\BOOKMARK [2][-]{subsection.9.2}{Vorlesung 11.04.2017 - Timer-Konfiguration}{section.9}% 28
-\BOOKMARK [2][-]{subsection.9.3}{Vorlesung 25.04.2017 - SystemTime}{section.9}% 29
-\BOOKMARK [2][-]{subsection.9.4}{Vorlesung 02.05.2017 - Non-blocking Code}{section.9}% 30
-\BOOKMARK [2][-]{subsection.9.5}{Vorlesung 16.05.2017 - LCD-Bibliothek}{section.9}% 31
-\BOOKMARK [2][-]{subsection.9.6}{Vorlesung 16.05.2017 - LCD-Bibliothek 2}{section.9}% 32
-\BOOKMARK [1][-]{section*.4}{Anhang}{}% 33
+\BOOKMARK [2][-]{subsection.3.3}{Update der I/O Bibliothek}{section.3}% 11
+\BOOKMARK [1][-]{section.4}{Timer-Konfiguration}{}% 12
+\BOOKMARK [2][-]{subsection.4.1}{Aufgabenstellung}{section.4}% 13
+\BOOKMARK [2][-]{subsection.4.2}{L\366sung}{section.4}% 14
+\BOOKMARK [1][-]{section.5}{SystemTime}{}% 15
+\BOOKMARK [2][-]{subsection.5.1}{Aufgabenstellung}{section.5}% 16
+\BOOKMARK [2][-]{subsection.5.2}{L\366sung}{section.5}% 17
+\BOOKMARK [1][-]{section.6}{Non-blocking Code}{}% 18
+\BOOKMARK [2][-]{subsection.6.1}{Aufgabenstellung}{section.6}% 19
+\BOOKMARK [2][-]{subsection.6.2}{L\366sung}{section.6}% 20
+\BOOKMARK [1][-]{section.7}{Software-Entwurf mit FSM}{}% 21
+\BOOKMARK [2][-]{subsection.7.1}{Aufgabenstellung}{section.7}% 22
+\BOOKMARK [2][-]{subsection.7.2}{L\366sung}{section.7}% 23
+\BOOKMARK [1][-]{section.8}{LCD-Bibliothek}{}% 24
+\BOOKMARK [2][-]{subsection.8.1}{Aufgabenstellung}{section.8}% 25
+\BOOKMARK [2][-]{subsection.8.2}{L\366sung}{section.8}% 26
+\BOOKMARK [1][-]{section.9}{Rotary Encoder}{}% 27
+\BOOKMARK [2][-]{subsection.9.1}{Aufgabenstellung}{section.9}% 28
+\BOOKMARK [2][-]{subsection.9.2}{L\366sung}{section.9}% 29
+\BOOKMARK [1][-]{section.10}{AD-Wandler}{}% 30
+\BOOKMARK [2][-]{subsection.10.1}{Aufgabenstellung}{section.10}% 31
+\BOOKMARK [2][-]{subsection.10.2}{L\366sung}{section.10}% 32
+\BOOKMARK [1][-]{section.11}{Mitschrift aus Vorlesung}{}% 33
+\BOOKMARK [2][-]{subsection.11.1}{Vorlesung 04.04.2017 - IO-Bibliothek}{section.11}% 34
+\BOOKMARK [2][-]{subsection.11.2}{Vorlesung 11.04.2017 - Timer-Konfiguration}{section.11}% 35
+\BOOKMARK [2][-]{subsection.11.3}{Vorlesung 25.04.2017 - SystemTime}{section.11}% 36
+\BOOKMARK [2][-]{subsection.11.4}{Vorlesung 02.05.2017 - Non-blocking Code}{section.11}% 37
+\BOOKMARK [2][-]{subsection.11.5}{Vorlesung 16.05.2017 - LCD-Bibliothek}{section.11}% 38
+\BOOKMARK [2][-]{subsection.11.6}{Vorlesung 16.06.2017 - AD-Wandler}{section.11}% 39
+\BOOKMARK [1][-]{section*.8}{Anhang}{}% 40

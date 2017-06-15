@@ -127,7 +127,7 @@ ISR:
 
 \subsection{Vorlesung 02.05.2017 - Non-blocking Code}
 \begin{itemize}
-	\item ...
+	\item Implementierung mit State Machines...
 \end{itemize}
 
 \subsection{Vorlesung 16.05.2017 - LCD-Bibliothek}
@@ -193,7 +193,42 @@ ISR:
 \end{itemize}
 \end{itemize}
 
-\subsection{Vorlesung 16.05.2017 - LCD-Bibliothek 2}
+\subsection{Vorlesung 16.06.2017 - AD-Wandler}
+\begin{itemize}
+	\item Two Modules:
+	\begin{itemize}
+		\item ADC1: Up to 32 analog input channels
+		\item ADC2: Up to 16 analog input channels
+	\end{itemize}
+	\item Key Features
+	\begin{itemize}
+		\item 10- or 12-bit ADC
+		\item Successive Approximation (SAR) Conversion (Dt.: Wägeverfahren)
+		\subitem Kompromiss zw. Geschwindigkeit und Aufwand
+		\item Conversion Speed of up to 1,1Msps (10bit) or 500ksps(12Bit)
+		\item simultaneous sampling of up to 4 analog input pins (10bit)
+	\end{itemize}
+	\item ADCx MODULE BLOCK DIAGRAM
+	\begin{itemize}
+		\item 4 Sample and Hold -Glieder
+		\item Multiplexer
+		\item Referenzspannungen 
+		\subitem $\rightarrow$ Wir verwenden interne Referenzen
+	\end{itemize}
+	\item AD-Umsetzer nach dem Wägeverfahren
+	\subitem siehe Abb 17.41 Tietze, Schenk, Gamm
+	\item Flash-Converter sind sehr schnell, jedoch sehr aufwändig zu realisieren
+	\item EDA dsPICC33-Board
+	\begin{itemize}
+		\item AN0, AN1
+		\item Potis mit SW500 zuschaltbar
+		\item Analoge Eingänge auf J501 herausgeführt
+	\end{itemize}
+	\item
+\end{itemize}
+
 \begin{itemize}
 	\item 
+	\item
+	\item
 \end{itemize}

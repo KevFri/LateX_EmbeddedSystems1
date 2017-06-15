@@ -25,9 +25,9 @@ und vergleichen Sie diese mit einem direkten Schreiben in die entsprechenden Har
 
 \subsection{Lösung}
 Alle Device-Pins (ausgenommen VDD, VSS, MCLR and OSC1/CLKI) sind aufgeteilt auf die Ports für Peripheriegeräte und parallel I/O Ports. Alle I/O Ports sind Schmitt-Trigger Input (verbesserte Störungsunempfindlichkeit / Rauschempfindlichkeit).\newline
-Alle Port Pins besitzen acht Register, durch diese Register lässt sich der I/O Port wie in Tabelle \ref{tab:ioports} dargestellt konfigurieren. Die Register Maps sind in Abbildung \ref{image:PORTA}-\ref{image:PORTG} dargestellt.\newline\newline
+Alle Port Pins besitzen acht Register, durch diese Register lässt sich der I/O Port wie in Tabelle \ref{tab:ioports} dargestellt konfigurieren. Die Register Maps sind in Abbildung \ref{image:PortMap} dargestellt.\newline\newline
 Ein Beispiel wie auf die einzelnen Register Bits zugegriffen werden kann und wie ein Port konfiguriert werden kann ist in Listing \ref{lst:confregport} zu sehen.\newline\newline
-Die relevanten Auszüge aus dem Datenblatt sind in den Abbildungen \ref{image:page207}-\ref{image:page209} abgebildet.\newline\newline
+Die relevanten Auszüge aus dem Datenblatt sind in Abbildung \ref{image:PortMap} abgebildet.\newline\newline
 Es wurde die Bibliothek mit den Dateien \textit{edaPIC33Hardware.h} und \textit{edaPIC33Hardware.c} erstellt. Die Funktion wurde mit Doxygen dokumentiert (TODO Anhang...).
 
 \newpage
@@ -85,6 +85,216 @@ CNENBbits.CNIEB8=0;     //disable change notification interrupt
 CNPUBbits.CNPUB8=1;     //enable weak pullup
 CNPDBbits.CNPDB8=0;     //disable weak pulldown
 \end{lstlisting}
+\newpage
+\subsection{Update der I/O Bibliothek}
+Im laufe der Vorlesung stellte es sich als sehr mühsam und fehleranfällig heraus jeden Port des PIC von Hand wie in Listing \ref{lst:confregport} zu konfigurieren.\newline
+Deshalb wurde ein Konzept entwickelt, mit welchem man möglichst allgemein und mit wenig Programmieraufwand jeden einzelnen I/O Port konfigurieren kann. \newline
+
+\begin{lstlisting}[frame=htrbl, caption={Funktionsprototypen edaPIC33Hardware-Library}, label={lst:edaPIC33Hardware}]
+void pinMode(const uint8_t ui8Port,const  uint8_t ui8Mode);
+
+void digitalWrite(const uint8_t ui8Port,const  uint8_t ui8Value);
+
+void digitalToggle(const uint8_t ui8Port);
+
+uint8_t digitalRead(const uint8_t ui8Port);
+
+uint16_t* getpTRIS(uint8_t Port);
+
+uint16_t* getpPORT(uint8_t Port);
+
+uint16_t* getpLAT(uint8_t Port);
+
+uint16_t* getpODC(uint8_t Port);
+
+uint16_t* getpCNEN(uint8_t Port);
+
+uint16_t* getpCNPU(uint8_t Port);
+
+uint16_t* getpCNPD(uint8_t Port);
+
+uint16_t* getpANSEL(uint8_t Port);
+
+void setBit(uint16_t* pui16Var, uint8_t ui8Bit, uint8_t ui8Value);
+
+uint8_t getBit(uint16_t ui16Var, uint8_t ui8Bit);
+
+uint8_t getPortBitNumb(uint8_t Port);
+
+\end{lstlisting} 
+
+\newpage
+\begin{lstlisting}[frame=htrbl, caption={pinMode() Funktion}, label={lst:pinmode}]
+//Supported Modes:DIGITAL_INPUT, DIGITAL_INPUT_PULLDOWN, DIGITAL_INPUT_PULLUP, DIGITAL_OUTPUT, OPEN_DRAIN_OUTPUT, ANALOG_INPUT, ANALOG_OUTPUT, ANALOG_INPUT_PULLDOWN, ANALOG_INPUT_PULLUP
+void pinMode(const uint8_t ui8Port,const uint8_t ui8Mode)
+{
+uint16_t* pTRIS =  getpTRIS(ui8Port);    //Output/Input select
+uint16_t* pCNEN =  getpCNEN(ui8Port);    //CN Interrupt Enable Bit
+uint16_t* pCNPU =  getpCNPU(ui8Port);    //Pull-Up enable Bit
+uint16_t* pCNPD =  getpCNPD(ui8Port);    //Pull-Down enable Bit
+uint16_t* pANSEL = getpANSEL(ui8Port);   //Analog select Bit
+uint16_t* pODC =   getpODC(ui8Port);     //open drain select Bit
+switch(ui8Mode)
+{   //set ANSEL, TRIS, CNEN, CNPU, CNPD and ODC bit
+	case DIGITAL_INPUT:
+		setBit(pANSEL,getPortBitNumb(ui8Port), 0);
+		setBit(pTRIS, getPortBitNumb(ui8Port), 1);      
+		setBit(pCNEN, getPortBitNumb(ui8Port), 0);
+		setBit(pCNPU, getPortBitNumb(ui8Port), 0);
+		setBit(pCNPD, getPortBitNumb(ui8Port), 0);
+		setBit(pODC,  getPortBitNumb(ui8Port), 0);
+	break;
+	
+	case DIGITAL_INPUT_PULLUP:
+		setBit(pANSEL,getPortBitNumb(ui8Port), 0);
+		setBit(pTRIS, getPortBitNumb(ui8Port), 1);      
+		setBit(pCNEN, getPortBitNumb(ui8Port), 0);
+		setBit(pCNPU, getPortBitNumb(ui8Port), 1);
+		setBit(pCNPD, getPortBitNumb(ui8Port), 0);
+		setBit(pODC,  getPortBitNumb(ui8Port), 0);
+	break;
+	
+	case DIGITAL_INPUT_PULLDOWN:
+		setBit(pANSEL,getPortBitNumb(ui8Port), 0);
+		setBit(pTRIS, getPortBitNumb(ui8Port), 1);      
+		setBit(pCNEN, getPortBitNumb(ui8Port), 0);
+		setBit(pCNPU, getPortBitNumb(ui8Port), 0);
+		setBit(pCNPD, getPortBitNumb(ui8Port), 1);
+		setBit(pODC,  getPortBitNumb(ui8Port), 0);
+	break;
+	
+	case DIGITAL_OUTPUT:
+		setBit(pANSEL,getPortBitNumb(ui8Port), 0);
+		setBit(pTRIS, getPortBitNumb(ui8Port), 0);      
+		setBit(pCNEN, getPortBitNumb(ui8Port), 0);
+		setBit(pCNPU, getPortBitNumb(ui8Port), 0);
+		setBit(pCNPD, getPortBitNumb(ui8Port), 0);
+		setBit(pODC,  getPortBitNumb(ui8Port), 0);
+	break;
+	
+	case OPEN_DRAIN_OUTPUT:
+		setBit(pANSEL,getPortBitNumb(ui8Port), 0);
+		setBit(pTRIS, getPortBitNumb(ui8Port), 0);      
+		setBit(pCNEN, getPortBitNumb(ui8Port), 0);
+		setBit(pCNPU, getPortBitNumb(ui8Port), 0);
+		setBit(pCNPD, getPortBitNumb(ui8Port), 0);
+		setBit(pODC,  getPortBitNumb(ui8Port), 1);
+	break;
+	
+	case ANALOG_OUTPUT:
+		setBit(pANSEL,getPortBitNumb(ui8Port), 1);
+		setBit(pTRIS, getPortBitNumb(ui8Port), 0);      
+		setBit(pCNEN, getPortBitNumb(ui8Port), 0);
+		setBit(pCNPU, getPortBitNumb(ui8Port), 0);
+		setBit(pCNPD, getPortBitNumb(ui8Port), 0);
+		setBit(pODC,  getPortBitNumb(ui8Port), 0);
+	break;
+	
+	case ANALOG_INPUT:
+		setBit(pANSEL,getPortBitNumb(ui8Port), 1);
+		setBit(pTRIS, getPortBitNumb(ui8Port), 1);      
+		setBit(pCNEN, getPortBitNumb(ui8Port), 0);
+		setBit(pCNPU, getPortBitNumb(ui8Port), 0);
+		setBit(pCNPD, getPortBitNumb(ui8Port), 0);
+		setBit(pODC,  getPortBitNumb(ui8Port), 0);
+	break;
+	
+	case ANALOG_INPUT_PULLDOWN:
+		setBit(pANSEL,getPortBitNumb(ui8Port), 1);
+		setBit(pTRIS, getPortBitNumb(ui8Port), 1);      
+		setBit(pCNEN, getPortBitNumb(ui8Port), 0);
+		setBit(pCNPU, getPortBitNumb(ui8Port), 0);
+		setBit(pCNPD, getPortBitNumb(ui8Port), 1);
+		setBit(pODC,  getPortBitNumb(ui8Port), 0);
+	break;   
+	
+	case ANALOG_INPUT_PULLUP:
+		setBit(pANSEL,getPortBitNumb(ui8Port), 1);
+		setBit(pTRIS, getPortBitNumb(ui8Port), 1);      
+		setBit(pCNEN, getPortBitNumb(ui8Port), 0);
+		setBit(pCNPU, getPortBitNumb(ui8Port), 1);
+		setBit(pCNPD, getPortBitNumb(ui8Port), 0);
+		setBit(pODC,  getPortBitNumb(ui8Port), 0);
+	break;
+	}
+}
+\end{lstlisting}
+
+% Vorlage für Quellcode Listing	
+\begin{lstlisting}[frame=htrbl, caption={digitalWrite() Funktion}, label={lst:digitalwrite}]
+void digitalWrite(const uint8_t ui8Port,const uint8_t ui8Value)
+{  
+	if(ui8Value)
+		setBit(getpLAT(ui8Port), getPortBitNumb(ui8Port), 1);
+	else
+		setBit(getpLAT(ui8Port), getPortBitNumb(ui8Port), 0);
+}
+\end{lstlisting}
+
+\begin{lstlisting}[frame=htrbl, caption={digitalToggle() Funktion}, label={lst:digitalToggle}]
+void digitalToggle(const uint8_t ui8Port)
+{
+	digitalWrite(ui8Port, !digitalRead(ui8Port));
+}
+\end{lstlisting}
+
+\begin{lstlisting}[frame=htrbl, caption={digitalRead() Funktion}, label={lst:digitalRead}]
+uint8_t digitalRead(const uint8_t ui8Port)
+{
+	return getBit(*getpPORT(ui8Port), getPortBitNumb(ui8Port));
+}
+\end{lstlisting}
+
+\begin{lstlisting}[frame=htrbl, caption={getPortBitNumb() Funktion}, label={lst:getPortBitNumb}]
+uint8_t getPortBitNumb(uint8_t Port)
+{
+	switch(Port)
+	{
+		case RA0:  return 0;
+		case RA1:  return 1;
+		case RA2:  return 2;
+		//[...] fuer alle Pins definiert
+		case RB0:  return 0;
+		case RB1:  return 1;
+		case RB2:  return 2;
+		//[...]
+		case RG13: return 13;
+		case RG14: return 14;
+		case RG15: return 15;       
+	}
+	return 0;
+}
+\end{lstlisting}
 
 
+\begin{lstlisting}[frame=htrbl, caption={setBit() Funktion}, label={lst:setBit}]
+void setBit(uint16_t* pui16Var, uint8_t ui8Bit, uint8_t ui8Value)
+{
+if(ui8Bit < 16 && ui8Value<2)
+{
+	if(ui8Value)
+		*pui16Var |= (0x0001 << ui8Bit); //set to 1
+	else
+		*pui16Var &= (~(0x0001 << ui8Bit)); //set to 0
+	}
+}
+\end{lstlisting}
 
+\begin{lstlisting}[frame=htrbl, caption={getBit() Funktion}, label={lst:getBit}]
+uint8_t getBit(uint16_t ui16Var, uint8_t ui8Bit)
+{
+return (ui16Var & ( 1 << ui8Bit )) >> ui8Bit;
+}
+\end{lstlisting}
+
+\begin{lstlisting}[frame=htrbl, caption={getpTRIS() Funktion}, label={lst:getpTRIS}]
+uint16_t* getpTRIS(uint8_t Port)
+{
+	if( Port == RA0 ||  Port == RA1 ||  Port == RA2 ||  Port == RA3 ||  Port == RA4 ||  Port == RA5 ||  Port == RA6 ||  Port == RA7 ||  Port == RA9 ||  Port == RA10 || Port == RA14 || Port == RA15)
+	return (uint16_t*)&TRISA;
+	//[...] fuer alle Pins definiert
+	if( Port == RG0 ||  Port == RG1 ||  Port == RG2 ||  Port == RG3 ||  Port == RG6 ||  Port == RG7 ||  Port == RG8 ||  Port == RG9 ||  Port == RG12 || Port == RG13 || Port == RG14 || Port == RG15)
+	return (uint16_t*)&TRISG;
+	return 0;
+}
+\end{lstlisting}

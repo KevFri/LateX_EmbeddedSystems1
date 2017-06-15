@@ -29,18 +29,32 @@ Vorgehensweise:
 	\item Implementieren Sie anschließend das Kopieren des Schattenspeichers
 \end{itemize}
 
+
 \subsection{Lösung}
+Die Initialisierung des LCD-Controllers wurde wie im Datenblatt beschrieben umgesetzt. Die im Datenblatt vorgeschlagene Initialisierungssequenz ist in Abbildung \ref{image:lcdinit} (Seite \pageref{image:lcdinit}) abgebildet. Die Funktion \texttt{initMyLCD()} ist in Listening \ref{lst:lcdinit} (Seite \pageref{lst:lcdinit}) zu finden.\newline
+\newline
+Alle Funktionenprototypen der edaPIC33LCD-Library sind in Listening \ref{lst:lcdlib} (Seite \pageref{lst:lcdlib}) zu finden.\newline
+Eine Ausführliche Beschreibung und alternativer Quellcode ist in Programming 16-Bit PIC Microcontrollers in C (Di Jasio) - Chapter 9 zu finden.\newline
 
-\begin{enumerate}
-		\item Lösungsansatz 1
-		\item Lösungsansatz 2
-		\item Lösungsansatz 3
-		\item Lösungsansatz 4
-\end{enumerate}
+\subsubsection*{Abstrahierte Verwendung des LCD}
+Um die Verwendung des LCD zu vereinfachen wurde eine Funktionalität entwickelt, welche einen Schattenspeicher zyklisch auf das LCD schreibt. Hierfür wurden die Funktionen in Listing \ref{lst:writedatatolcd} realisiert.\newline
 
-
-%Beispiel für Quellcode Listening
-\begin{lstlisting}[frame=htrbl, caption={Listening Bezeichnung}, label={lst:Referenzname}]
-//Quellcode
+%Shadow String Prototypen
+\begin{lstlisting}[frame=htrbl, caption={Funktionsprototypen für Schattenspeicher Funktionalität}, label={lst:writedatatolcd}]
+extern char ShadowString[32]; 
+void setLCDLine(const char* pStr, uint8_t ui8Line);
+void sendDataToLCD();
 \end{lstlisting}
+Der Funktion \texttt{setLCDLine(pStr, Line)} wird ein String und die gewünschte Zeile des LCD übergeben. Der übergeben String (max. 16 Zeichen) wird in den \texttt{ShadowString} kopiert. Je nach übergebener Zeile werden die Daten ab \texttt{ShadowString[0]} (Zeile 0) bzw ab \texttt{ShadowString[16]} (Zeile 1) gespeichert.\newline
+Ist der übergebene String (\texttt{pStr}) kleiner als 16 Zeichen, so wird die restliche Zeile von \texttt{ShadowString} mit Leerzeichen gefüllt (dies vereinfacht die Programmierung der Funktion \texttt{sendDataToLCD()} ). Ist der übergebene String größer als 16 Zeichen, so werden nur die ersten 16 Zeichen kopiert. \newline
+Der String \texttt{pStr} muss zwingend nullterminiert sein (Ende gekennzeichnet durch \texttt{'$\ensuremath{\backslash}0$'}). \newline
+Die Funktion \texttt{sendDataToLCD()} ist so programmiert, dass bei einem Funktionsaufruf zuerst das Busy-Flag des LCD abgefragt. Anschließend wird, wenn der LCD nicht beschäftigt ist, ein Zeichen des \texttt{ShadowString} an den LCD gesendet. Im nächsten Funktionsaufruf wird dann das nächste Zeichen an den LCD gesendet, oder (wenn nötig) den LCD Cursor auf Zeile 2 setzen, bzw. auf Zeile 1.\newline
+\newline
+In Abbildung \ref{image:LCD_busy_flag} ist das Busy-Flag des LCD abgebildet. Das LCD benötigt zum schreiben eines Characters ca 30us.
+\begin{figure}[!h]
+	\centering
+	\includegraphics[width=0.65\textwidth]{Images/LCD_busy_flag}
+	\caption[NonBlockingCode]{Busy-Flag des LCD Display}
+	\label{image:LCD_busy_flag}
+\end{figure}
 
